@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: scrabble-buddy
+  description: API for checking words and letters for scrabble
+  version: 1.0.0
+servers:
+  - url: https://scrabble.adelbeit.com/
+    description: Main server
+
+paths:
+  /includes/{letters}:
+    get:
+      summary: Return words that include the given letters
+      operationId: includesLetters
+      parameters:
+        - name: letters
+          in: path
+          required: true
+          description: Letters to use for finding words
+          schema:
+            type: string
+      responses:
+        '200':
+          description: a json object with a list of words, like so {msg:[word1, word2, word3]}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Invalid input
+
+  /check/{word}:
+    get:
+      summary: Check if the word is valid
+      operationId: checkWord
+      parameters:
+        - name: word
+          in: path
+          required: true
+          description: Word to check
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+        '400':
+          description: Invalid input
