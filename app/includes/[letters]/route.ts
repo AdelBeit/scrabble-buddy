@@ -18,10 +18,9 @@ export async function GET(
     }
     query += conditions.join(' AND ');
     const result = await postgres.query(query);
-    if (result.rowCount === 0) {
-      return NextResponse.json({ msg: 'No words can be formed with those letters.' });
-    }
-    return NextResponse.json({
+    let response = { msg: 'No words can be formed with those letters.' };
+    if (result.rowCount !== 0) {
+    response = {
       msg: result.rows
         .map((row: { word: string }) => row.word)
         .sort(
@@ -29,8 +28,14 @@ export async function GET(
         )
         .slice(0, RESULT_CAP)
     });
+     let nextResponse = NextResponse.json(response);
+      nextResponse.headers.set('Access-Control-Allow-Origin','*');
+    return nextResponse;
+    }
   } catch (err) {
-    return NextResponse.json({ msg: err });
+    let nextResponse = NextResponse.json({ msg: err });
+    nextResponse.headers.set('Access-Control-Allow-Origin','*');
+    return nextResponse;
   }
 }
 
