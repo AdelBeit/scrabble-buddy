@@ -8,12 +8,17 @@ export async function GET(request: NextRequest,{params}:{params:{word:string}}){
       'SELECT word FROM words WHERE word = UPPER($1)',
       [word]
     );
+      let response = {msg:"Valid word!",isValid:true};
     if (result.rowCount === 0) {
-      return NextResponse.json({ msg: 'Invalid word!' });
+      response = {msg:"Invalid word!",isValid:false};
     }
-    return NextResponse.json({ msg: 'Valid word!' });
+    let nextResponse = NextResponse.json(response);
+    nextResponse.headers.set('Access-Control-Allow-Origin','*');
+    return nextResponse;
   } catch (err) {
-    return NextResponse.json({ msg: err });
+    let nextResponse = NextResponse.json({ msg: err });
+    nextResponse.headers.set('Access-Control-Allow-Origin','*');
+    return nextResponse;
   }
 }
 
